@@ -19,7 +19,7 @@ class SegyTraceHeader
     end
   end
 
-  def samples_per_trace
+  def samples_in_trace
     bytes(2, 115)
   end
 

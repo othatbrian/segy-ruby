@@ -27,7 +27,7 @@ class Segy
 
   def next_trace
     header = SegyTraceHeader.new(@file.read(240))
-    data = @file.read(header.samples_per_trace * sample_size)
+    data = @file.read(header.samples_in_trace * sample_size)
     trace = SegyTrace.new(header, data)
   end
 
