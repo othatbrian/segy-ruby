@@ -1,8 +1,11 @@
+require File.dirname(__FILE__) + '/segy_errors.rb'
+
 class SegyTraceHeader
 
   attr_reader :entries
 
   def initialize(data)
+    data and data.length == 240 or raise IncompleteTraceHeader
     @entries = []
     @data = data.dup
     parse(data)

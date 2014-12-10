@@ -1,0 +1,2 @@
+class IncompleteTraceHeader < RuntimeError
+end
