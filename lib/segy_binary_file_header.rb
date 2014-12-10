@@ -1,10 +1,23 @@
-class BinaryFileHeader
+class SegyBinaryFileHeader
 
   attr_reader :entries
 
   def initialize(data)
     @entries = []
+    @data = data.dup
     parse(data)
+  end
+
+  def bytes(size, start)
+    start = start - 3200
+    case size
+    when 2
+      @data.slice(start - 1, size).unpack('s>').shift
+    when 4
+      @data.slice(start - 1, size).unpack('S>').shift
+    else
+      @data.slice(start - 1, size)
+    end
   end
 
   private
