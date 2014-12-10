@@ -19,6 +19,7 @@ class Segy
   end
 
   def first_trace
+    @file.seek(3600, :SET)
     header = SegyTraceHeader.new(@file.read(240))
     data = @file.read(header.samples_per_trace * sample_size)
     trace = SegyTrace.new(header, data)
