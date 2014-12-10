@@ -3,9 +3,12 @@ require File.dirname(__FILE__) + '/binary_file_header'
 
 class Segy
 
+  attr_reader :textual_file_header
+  attr_reader :binary_file_header
+
   def self.open(file)
     instance = allocate
-    instance.instance_variable_set(:@file, File.open(file))
+    instance.send :setup, file
     instance
   end
 
@@ -13,12 +16,12 @@ class Segy
     @file.close
   end
 
-  def file_header
-    @file.read(3200).unpack('C*').collect { |int| Ebcdic.to_ascii int }.join
-  end
+  private
 
-  def binary_file_header
-    BinaryFileHeader.new(@file.read(400))
+  def setup(file)
+    @file = File.open(file)
+    @textual_file_header = @file.read(3200).unpack('C*').collect { |int| Ebcdic.to_ascii int }.join
+    @binary_file_header = BinaryFileHeader.new(@file.read(400))
   end
 
 end
