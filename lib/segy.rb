@@ -1,4 +1,5 @@
 require File.dirname(__FILE__) + '/ebcdic'
+require File.dirname(__FILE__) + '/binary_file_header'
 
 class Segy
 
@@ -14,6 +15,10 @@ class Segy
 
   def file_header
     @file.read(3200).unpack('C*').collect { |int| Ebcdic.to_ascii int }.join
+  end
+
+  def binary_file_header
+    BinaryFileHeader.new(@file.read(400))
   end
 
 end
