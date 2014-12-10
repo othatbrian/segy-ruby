@@ -24,14 +24,22 @@ class Segy
     trace = SegyTrace.new(header, data)
   end
 
+  def next_trace
+    header = SegyTraceHeader.new(@file.read(240))
+    data = @file.read(header.samples_per_trace * sample_size)
+    trace = SegyTrace.new(header, data)
+  end
+
   def sample_size
-    case @binary_file_header.bytes(2, 3225)
-    when 1,2,4,5
-      4
-    when 3
-      2
-    when 8
-      1
+    @sample_size ||= begin
+      case @binary_file_header.bytes(2, 3225)
+      when 1,2,4,5
+        4
+      when 3
+        2
+      when 8
+        1
+      end
     end
   end
 
