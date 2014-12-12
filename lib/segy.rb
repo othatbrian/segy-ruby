@@ -7,6 +7,7 @@ class Segy
 
   attr_reader :textual_file_header
   attr_reader :binary_file_header
+  attr_reader :file
 
   def self.open(file)
     instance = allocate
@@ -27,8 +28,22 @@ class Segy
 
   def next_trace
     header = SegyTraceHeader.new(@file.read(240))
-    data = @file.read(header.samples_in_trace * sample_size)
+#    begin
+      data = @file.read(trace_data_size)
+#    rescue
+#      location = 0
+#      header.entries.each do |entry|
+#        bytes, value = entry
+#        puts sprintf("bytes %03d - %03d: ", location + 1, location + bytes) + value.to_s
+#        location += bytes
+#      end
+#      raise
+#    end
     trace = SegyTrace.new(header, data)
+  end
+
+  def samples_per_trace
+    @samples_per_trace ||= @binary_file_header.bytes(2, 3221)
   end
 
   def sample_size
@@ -42,6 +57,10 @@ class Segy
         1
       end
     end
+  end
+
+  def trace_data_size
+    @trace_data_size ||= samples_per_trace * sample_size
   end
 
   private
